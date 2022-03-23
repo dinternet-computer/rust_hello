@@ -18,6 +18,7 @@ export const idlFactory = ({ IDL }) => {
     'm_stable64_grow' : IDL.Func([], [], ['query']),
     'm_stable_size' : IDL.Func([], [IDL.Nat], ['query']),
     'm_time' : IDL.Func([], [IDL.Nat], ['query']),
+    'path_test' : IDL.Func([], [IDL.Text], []),
     'raw_rand' : IDL.Func([], [RawRand], []),
     'search' : IDL.Func([IDL.Text], [IDL.Opt(Profile_2)], ['query']),
     'set' : IDL.Func([IDL.Nat], [], []),

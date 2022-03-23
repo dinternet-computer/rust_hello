@@ -19,6 +19,7 @@ export interface _SERVICE {
   'm_stable64_grow' : () => Promise<undefined>,
   'm_stable_size' : () => Promise<bigint>,
   'm_time' : () => Promise<bigint>,
+  'path_test' : () => Promise<string>,
   'raw_rand' : () => Promise<RawRand>,
   'search' : (arg_0: string) => Promise<[] | [Profile_2]>,
   'set' : (arg_0: bigint) => Promise<undefined>,

@@ -27,5 +27,6 @@ service : () -> {
     "m_stable_size": () -> (nat) query;
     "m_stable64_grow": () -> () query;
     "raw_rand": () -> (RawRand);
+    "path_test": () -> (text);
 }
 

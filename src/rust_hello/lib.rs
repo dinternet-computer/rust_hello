@@ -6,12 +6,13 @@ use ic_cdk::{
     export::{
         candid::{CandidType, Deserialize},
         Principal,
-    }, id, call, storage,
+    }, id, call, storage, trap,
 };
 
 use ic_cdk_macros::*;
-use std::cell::RefCell;
+use std::{cell::RefCell, vec};
 use std::collections::BTreeMap;
+use std::path::Path;
 
 type IdStore = BTreeMap<String, Principal>;
 type ProfileStore = BTreeMap<Principal, Profile>;
@@ -76,6 +77,18 @@ fn m_stable_size() -> candid::Nat {
     candid::Nat::from(stable_size())
 }
 
+#[query]
+fn path_test() -> String {
+    let string = String::from("\nfoo.txt/hahaha/diosjdsij/");
+    let p = Path::new(&string);
+    
+    match p.to_string_lossy() {
+        d => {
+            d.to_string()
+        },
+    }
+}
+
 #[derive(CandidType, Deserialize)]
 struct HeaderField(String, String);
 
@@ -104,19 +117,27 @@ fn get_path(url: &str) -> Option<&str> {
 fn http_request(request: HttpRequest) -> HttpResponse {
     let path = get_path(request.url.as_str()).unwrap_or("/");
 
+    if path == "/haha" {
+        return HttpResponse { 
+            status_code: 200,
+            headers: Vec::new(),
+            body: path.as_bytes().to_vec(), 
+        }
+    }
+
+    let h: HeaderField =  HeaderField (String::from("Location"), String::from("http://172.18.169.239:8453/haha?canisterId=r7inp-6aaaa-aaaaa-aaabq-cai"));
     HttpResponse { 
-        status_code: 200,
-        headers: Vec::new(), 
+        status_code: 301,
+        headers: vec![h],
         body: path.as_bytes().to_vec(), 
     }
 }
 
 #[update]
-async fn raw_rand() -> (Vec<u8>,) {
-    let v: Result<(Vec<u8>,), _> = call(Principal::management_canister(), "raw_rand", ()).await;
-    match v {
-        Ok(u) => u,
-        Err(e) => panic!(e)
+async fn raw_rand() -> Vec<u8> {
+    match call(Principal::management_canister(), "raw_rand", ()).await {
+        Ok((res, )) => res,
+        Err((_, err)) => trap(&format!("failed to get seed: {}", err)),
     }
 }
 
