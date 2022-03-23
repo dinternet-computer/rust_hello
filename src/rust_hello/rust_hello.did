@@ -6,6 +6,10 @@ type Profile_2 = record {
 
 type Profile = Profile_2;
 
+type RawRand = record {
+    vec nat8
+}
+
 service : () -> {
     "getSelf": () -> (Profile_2) query;
     "get": (text) -> (Profile_2) query;
@@ -22,5 +26,6 @@ service : () -> {
     "m_id": () -> (text) query;
     "m_stable_size": () -> (nat) query;
     "m_stable64_grow": () -> () query;
+    "raw_rand": () -> (RawRand);
 }
 
