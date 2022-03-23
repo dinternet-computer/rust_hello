@@ -76,15 +76,14 @@ fn m_stable_size() -> candid::Nat {
     candid::Nat::from(stable_size())
 }
 
-// #[update]
-// async fn raw_rand() -> Option<(Vec<u8>,)> {
-//     let v: Result<(Vec<u8>,), _> = call(Principal::management_canister(), "raw_rand", ()).await?;
-    
-//     match v {
-//         Ok(u) => u,
-//         Err(e) => panic!(e)
-//     }
-// }
+#[update]
+async fn raw_rand() -> (Vec<u8>,) {
+    let v: Result<(Vec<u8>,), _> = call(Principal::management_canister(), "raw_rand", ()).await;
+    match v {
+        Ok(u) => u,
+        Err(e) => panic!(e)
+    }
+}
 
 #[export_name = "canister_heartbeat"]
 fn tick() {
