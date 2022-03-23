@@ -5,6 +5,7 @@ export interface Profile_2 {
   'description' : string,
   'keywords' : Array<string>,
 }
+export type RawRand = [Array<number>];
 export interface _SERVICE {
   'balance' : () => Promise<bigint>,
   'balance128' : () => Promise<bigint>,
@@ -18,6 +19,7 @@ export interface _SERVICE {
   'm_stable64_grow' : () => Promise<undefined>,
   'm_stable_size' : () => Promise<bigint>,
   'm_time' : () => Promise<bigint>,
+  'raw_rand' : () => Promise<RawRand>,
   'search' : (arg_0: string) => Promise<[] | [Profile_2]>,
   'set' : (arg_0: bigint) => Promise<undefined>,
   'update' : (arg_0: Profile_2) => Promise<undefined>,

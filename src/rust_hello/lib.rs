@@ -6,7 +6,7 @@ use ic_cdk::{
     export::{
         candid::{CandidType, Deserialize},
         Principal,
-    }, id, call,
+    }, id, call, storage,
 };
 
 use ic_cdk_macros::*;
@@ -74,6 +74,41 @@ fn m_id() -> String {
 #[query]
 fn m_stable_size() -> candid::Nat {
     candid::Nat::from(stable_size())
+}
+
+#[derive(CandidType, Deserialize)]
+struct HeaderField(String, String);
+
+#[derive(CandidType, Deserialize)]
+struct HttpRequest {
+    method: String,
+    url: String,
+    headers: Vec<HeaderField>,
+    #[serde(with = "serde_bytes")]
+    body: Vec<u8>
+}
+
+#[derive(CandidType, Deserialize)]
+struct HttpResponse {
+    status_code: u16,
+    headers: Vec<HeaderField>,
+    #[serde(with = "serde_bytes")]
+    body: Vec<u8>,
+}
+
+fn get_path(url: &str) -> Option<&str> {
+    url.split("?").next()
+}
+
+#[query]
+fn http_request(request: HttpRequest) -> HttpResponse {
+    let path = get_path(request.url.as_str()).unwrap_or("/");
+
+    HttpResponse { 
+        status_code: 200,
+        headers: Vec::new(), 
+        body: path.as_bytes().to_vec(), 
+    }
 }
 
 #[update]

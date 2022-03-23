@@ -4,6 +4,7 @@ export const idlFactory = ({ IDL }) => {
     'description' : IDL.Text,
     'keywords' : IDL.Vec(IDL.Text),
   });
+  const RawRand = IDL.Tuple(IDL.Vec(IDL.Nat8));
   return IDL.Service({
     'balance' : IDL.Func([], [IDL.Nat], ['query']),
     'balance128' : IDL.Func([], [IDL.Nat], ['query']),
@@ -17,6 +18,7 @@ export const idlFactory = ({ IDL }) => {
     'm_stable64_grow' : IDL.Func([], [], ['query']),
     'm_stable_size' : IDL.Func([], [IDL.Nat], ['query']),
     'm_time' : IDL.Func([], [IDL.Nat], ['query']),
+    'raw_rand' : IDL.Func([], [RawRand], []),
     'search' : IDL.Func([IDL.Text], [IDL.Opt(Profile_2)], ['query']),
     'set' : IDL.Func([IDL.Nat], [], []),
     'update' : IDL.Func([Profile_2], [], []),
