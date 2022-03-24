@@ -1,25 +1,29 @@
 use ic_cdk::{
     api::{
-        canister_balance, canister_balance128, data_certificate, stable::{stable_size, stable64_grow, stable_grow, stable_write, stable_read}, time, call::RejectionCode,
+        call::RejectionCode,
+        canister_balance, canister_balance128, data_certificate,
+        stable::{stable64_grow, stable_grow, stable_read, stable_size, stable_write},
+        time,
     },
-    caller,
+    call, caller,
     export::{
         candid::{CandidType, Deserialize},
         Principal,
-    }, id, call, storage, trap,
+    },
+    id, storage, trap,
 };
 
 use ic_cdk_macros::*;
-use test_storage::Address;
-use std::{cell::RefCell, vec, iter::FromIterator};
 use std::collections::BTreeMap;
 use std::path::Path;
+use std::{cell::RefCell, iter::FromIterator, vec};
+use test_storage::Address;
 
-use vfs::{VfsPath, VfsError, MemoryFS};
+use vfs::{MemoryFS, VfsError, VfsPath};
 
 mod test_storage;
 
-use crate::test_storage::{AddressBook};
+use crate::test_storage::AddressBook;
 
 type IdStore = BTreeMap<String, Principal>;
 type ProfileStore = BTreeMap<Principal, Profile>;
@@ -34,52 +38,45 @@ struct Profile {
 thread_local! {
     static PROFILE_STORE: RefCell<ProfileStore> = RefCell::default();
     static ID_STORE: RefCell<IdStore> = RefCell::default();
+    static VFS: VfsPath = MemoryFS::new().into();
 }
 
 #[update]
-fn dd_test() -> Vec<String> {
-    let root: VfsPath = MemoryFS::new().into();
-    let path = root.join("test.txt").unwrap();
+fn get_all_file() -> Vec<String> {
+    VFS.with(|r| {
+        r.join("a.txt")
+            .unwrap()
+            .create_file()
+            .unwrap()
+            .write_all(b"hahahahdsuahdsau")
+            .unwrap();
 
-    let path2 = root.join("hahahahah").unwrap();
+        r.join("b.txt")
+            .unwrap()
+            .create_file()
+            .unwrap()
+            .write_all(b"hahahahdasuhdsaudhsa")
+            .unwrap();
 
+        r.read_dir()
+            .unwrap()
+            .map(|v| v.as_str().to_string())
+            .collect::<Vec<String>>()
+    })
+}
 
-    path2.create_dir()
-        .unwrap();
-
-    path2
-        .join("a.txt")
+#[update]
+fn create_file(filename: String, content: String) -> Vec<String> {
+    VFS.with(|r| {
+        r.join(filename)
         .unwrap()
         .create_file()
         .unwrap()
-        .write_all(b"hahahahdsuahdsau")
+        .write_all(content.as_bytes())
         .unwrap();
 
-    path2
-        .join("b.txt")
-        .unwrap()
-        .create_file()
-        .unwrap()
-        .write_all(b"hahahahdasuhdsaudhsa")
-        .unwrap();
-
-    path.create_file()
-        .unwrap()
-        .write_all(b"Hello World")
-        .unwrap();
-
-    let mut content = String::new();
-
-    path.open_file()
-        .unwrap()
-        .read_to_string(&mut content)
-        .unwrap();
-    
-    path2
-        .read_dir()
-        .unwrap()
-        .map(|v| v.as_str().to_string())
-        .collect::<Vec<String>>() 
+        get_all_file()
+    })
 }
 
 #[query(name = "getSelf")]
@@ -152,11 +149,9 @@ fn m_stable_read() -> Vec<u8> {
 fn path_test() -> String {
     let string = String::from("\nfoo.txt/hahaha/diosjdsij/");
     let p = Path::new(&string);
-    
+
     match p.to_string_lossy() {
-        d => {
-            d.to_string()
-        },
+        d => d.to_string(),
     }
 }
 
@@ -187,7 +182,7 @@ struct HttpRequest {
     url: String,
     headers: Vec<HeaderField>,
     #[serde(with = "serde_bytes")]
-    body: Vec<u8>
+    body: Vec<u8>,
 }
 
 #[derive(CandidType, Deserialize)]
@@ -207,33 +202,34 @@ fn http_request(request: HttpRequest) -> HttpResponse {
     let path = get_path(request.url.as_str()).unwrap_or("/");
 
     if path == "/haha" {
-        return HttpResponse { 
+        return HttpResponse {
             status_code: 200,
             headers: Vec::new(),
-            body: path.as_bytes().to_vec(), 
-        }
+            body: path.as_bytes().to_vec(),
+        };
     }
 
-    let h: HeaderField =  HeaderField (String::from("Location"), String::from("http://172.18.169.239:8453/haha?canisterId=r7inp-6aaaa-aaaaa-aaabq-cai"));
-    HttpResponse { 
+    let h: HeaderField = HeaderField(
+        String::from("Location"),
+        String::from("http://172.18.169.239:8453/haha?canisterId=r7inp-6aaaa-aaaaa-aaabq-cai"),
+    );
+    HttpResponse {
         status_code: 301,
         headers: vec![h],
-        body: path.as_bytes().to_vec(), 
+        body: path.as_bytes().to_vec(),
     }
 }
 
 #[update]
 async fn raw_rand() -> Vec<u8> {
     match call(Principal::management_canister(), "raw_rand", ()).await {
-        Ok((res, )) => res,
+        Ok((res,)) => res,
         Err((_, err)) => trap(&format!("failed to get seed: {}", err)),
     }
 }
 
 #[export_name = "canister_heartbeat"]
-fn tick() {
-    
-}
+fn tick() {}
 
 #[query]
 fn get(name: String) -> Profile {

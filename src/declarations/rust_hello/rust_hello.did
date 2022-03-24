@@ -37,6 +37,7 @@ service : () -> {
     "get_address": (nat32) -> (Address);
     "all_address": () -> (vec Address);
     "m_stable_read": () -> (vec nat8);
-    "dd_test": () -> (vec text);
+    "get_all_file": () -> (vec text);
+    "create_file": (text, text) -> (vec text); 
 }
 
