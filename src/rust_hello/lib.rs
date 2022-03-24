@@ -89,11 +89,11 @@ fn m_stable_grow() {
 
 #[update]
 fn m_stable_write() {
-    let p: Vec<u8> = vec![2, 2, 1];
+    let p: Vec<u8> = vec![2, 2, 3];
     stable_write(21, &p)
 }
 
-#[update]
+#[query]
 fn m_stable_read() -> Vec<u8> {
     let mut p = [0, 0, 0].repeat(2);
     stable_read(21, &mut p);
