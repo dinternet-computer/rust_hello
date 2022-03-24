@@ -29,7 +29,7 @@ service : () -> {
     "m_time": () -> (nat) query;
     "m_caller": () -> (text) query;
     "m_id": () -> (text) query;
-    "m_stable_size": () -> (nat) query;
+    "m_stable_size": () -> (nat);
     "m_stable64_grow": () -> () query;
     "raw_rand": () -> (RawRand);
     "path_test": () -> (text);

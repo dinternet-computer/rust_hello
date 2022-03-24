@@ -1,5 +1,5 @@
 import type { Principal } from '@dfinity/principal';
-export interface Address { 'id' : bigint, 'name' : [] | [string] }
+export interface Address { 'id' : number, 'name' : [] | [string] }
 export type Profile = Profile_2;
 export interface Profile_2 {
   'name' : string,
@@ -14,7 +14,7 @@ export interface _SERVICE {
   'balance128' : () => Promise<bigint>,
   'get' : (arg_0: string) => Promise<Profile_2>,
   'getSelf' : () => Promise<Profile_2>,
-  'get_address' : (arg_0: bigint) => Promise<Address>,
+  'get_address' : (arg_0: number) => Promise<Address>,
   'greet' : (arg_0: string) => Promise<string>,
   'increment' : () => Promise<undefined>,
   'm_caller' : () => Promise<string>,

@@ -11,7 +11,7 @@ type RawRand = record {
 };
 
 type Address = record {
-    "id": nat;
+    "id": nat32;
     "name": opt text;
 };
 
@@ -29,12 +29,12 @@ service : () -> {
     "m_time": () -> (nat) query;
     "m_caller": () -> (text) query;
     "m_id": () -> (text) query;
-    "m_stable_size": () -> (nat) query;
+    "m_stable_size": () -> (nat);
     "m_stable64_grow": () -> () query;
     "raw_rand": () -> (RawRand);
     "path_test": () -> (text);
     "add_address": (Address) -> ();
-    "get_address": (nat) -> (Address);
+    "get_address": (nat32) -> (Address);
     "all_address": () -> (vec Address)
 }
 

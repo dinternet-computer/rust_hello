@@ -77,7 +77,7 @@ fn m_id() -> String {
     format!("{}", id())
 }
 
-#[query]
+#[update]
 fn m_stable_size() -> candid::Nat {
     candid::Nat::from(stable_size())
 }
