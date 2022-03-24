@@ -21,6 +21,7 @@ export interface _SERVICE {
   'm_data_certificate' : () => Promise<string>,
   'm_id' : () => Promise<string>,
   'm_stable64_grow' : () => Promise<undefined>,
+  'm_stable_read' : () => Promise<Array<number>>,
   'm_stable_size' : () => Promise<bigint>,
   'm_time' : () => Promise<bigint>,
   'path_test' : () => Promise<string>,

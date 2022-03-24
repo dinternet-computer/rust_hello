@@ -35,6 +35,7 @@ service : () -> {
     "path_test": () -> (text);
     "add_address": (Address) -> ();
     "get_address": (nat32) -> (Address);
-    "all_address": () -> (vec Address)
+    "all_address": () -> (vec Address);
+    "m_stable_read": () -> (vec nat8);
 }
 

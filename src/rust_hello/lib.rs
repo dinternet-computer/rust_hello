@@ -1,6 +1,6 @@
 use ic_cdk::{
     api::{
-        canister_balance, canister_balance128, data_certificate, stable::{stable_size, stable64_grow}, time, call::RejectionCode,
+        canister_balance, canister_balance128, data_certificate, stable::{stable_size, stable64_grow, stable_grow, stable_write, stable_read}, time, call::RejectionCode,
     },
     caller,
     export::{
@@ -80,6 +80,24 @@ fn m_id() -> String {
 #[update]
 fn m_stable_size() -> candid::Nat {
     candid::Nat::from(stable_size())
+}
+
+#[update]
+fn m_stable_grow() {
+    stable_grow(10000).unwrap_or(0);
+}
+
+#[update]
+fn m_stable_write() {
+    let p: Vec<u8> = vec![2, 2, 1];
+    stable_write(21, &p)
+}
+
+#[update]
+fn m_stable_read() -> Vec<u8> {
+    let mut p = [0, 0, 0].repeat(2);
+    stable_read(21, &mut p);
+    p
 }
 
 #[query]

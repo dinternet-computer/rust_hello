@@ -20,6 +20,7 @@ export const idlFactory = ({ IDL }) => {
     'm_data_certificate' : IDL.Func([], [IDL.Text], ['query']),
     'm_id' : IDL.Func([], [IDL.Text], ['query']),
     'm_stable64_grow' : IDL.Func([], [], ['query']),
+    'm_stable_read' : IDL.Func([], [IDL.Vec(IDL.Nat8)], []),
     'm_stable_size' : IDL.Func([], [IDL.Nat], []),
     'm_time' : IDL.Func([], [IDL.Nat], ['query']),
     'path_test' : IDL.Func([], [IDL.Text], []),
