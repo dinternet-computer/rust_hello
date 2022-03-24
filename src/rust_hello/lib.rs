@@ -1,8 +1,7 @@
 use ic_cdk::{
     api::{
-        call::RejectionCode,
         canister_balance, canister_balance128, data_certificate,
-        stable::{stable64_grow, stable_grow, stable_read, stable_size, stable_write},
+        stable::{stable_grow, stable_read, stable_size, stable_write},
         time,
     },
     call, caller,
@@ -14,16 +13,21 @@ use ic_cdk::{
 };
 
 use ic_cdk_macros::*;
-use std::collections::BTreeMap;
-use std::path::Path;
-use std::{cell::RefCell, iter::FromIterator, vec};
+use std::{borrow::Borrow, collections::BTreeMap};
+use std::{
+    borrow::{BorrowMut, Cow},
+    path::Path,
+};
+use std::{cell::RefCell, vec};
 use test_storage::Address;
 
 use vfs::{MemoryFS, VfsError, VfsPath};
 
-mod test_storage;
 
 use crate::test_storage::AddressBook;
+
+mod test_storage;
+mod filesystem;
 
 type IdStore = BTreeMap<String, Principal>;
 type ProfileStore = BTreeMap<Principal, Profile>;
@@ -38,27 +42,46 @@ struct Profile {
 thread_local! {
     static PROFILE_STORE: RefCell<ProfileStore> = RefCell::default();
     static ID_STORE: RefCell<IdStore> = RefCell::default();
-    static VFS: VfsPath = MemoryFS::new().into();
+    static VFS_ROOT: VfsPath = VFS::init().0.into();
 }
+
+struct VFS(MemoryFS);
+
+impl VFS {
+    fn init() -> Self {
+        VFS(MemoryFS::new())
+    }
+}
+
+#[derive(CandidType, Deserialize)]
+struct StableStorage {
+    vfs_root: serde_bytes::ByteBuf,
+}
+
+#[export_name = "canister_pre_upgrade"]
+fn pre_upgrade() {}
+
+#[export_name = "canister_post_upgrade"]
+fn post_upgrade() {}
 
 #[update]
 fn get_all_file() -> Vec<String> {
-    VFS.with(|r| {
-        r.join("a.txt")
+    VFS_ROOT.with(|p| {
+        p.join("a.txt")
             .unwrap()
             .create_file()
             .unwrap()
             .write_all(b"hahahahdsuahdsau")
             .unwrap();
 
-        r.join("b.txt")
+        p.join("b.txt")
             .unwrap()
             .create_file()
             .unwrap()
             .write_all(b"hahahahdasuhdsaudhsa")
             .unwrap();
 
-        r.read_dir()
+        p.read_dir()
             .unwrap()
             .map(|v| v.as_str().to_string())
             .collect::<Vec<String>>()
@@ -67,13 +90,13 @@ fn get_all_file() -> Vec<String> {
 
 #[update]
 fn create_file(filename: String, content: String) -> Vec<String> {
-    VFS.with(|r| {
-        r.join(filename)
-        .unwrap()
-        .create_file()
-        .unwrap()
-        .write_all(content.as_bytes())
-        .unwrap();
+    VFS_ROOT.with(|p| {
+        p.join(filename)
+            .unwrap()
+            .create_file()
+            .unwrap()
+            .write_all(content.as_bytes())
+            .unwrap();
 
         get_all_file()
     })
