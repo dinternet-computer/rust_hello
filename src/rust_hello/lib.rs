@@ -11,9 +11,11 @@ use ic_cdk::{
 
 use ic_cdk_macros::*;
 use test_storage::Address;
-use std::{cell::RefCell, vec};
+use std::{cell::RefCell, vec, iter::FromIterator};
 use std::collections::BTreeMap;
 use std::path::Path;
+
+use vfs::{VfsPath, VfsError, MemoryFS};
 
 mod test_storage;
 
@@ -32,6 +34,52 @@ struct Profile {
 thread_local! {
     static PROFILE_STORE: RefCell<ProfileStore> = RefCell::default();
     static ID_STORE: RefCell<IdStore> = RefCell::default();
+}
+
+#[update]
+fn dd_test() -> Vec<String> {
+    let root: VfsPath = MemoryFS::new().into();
+    let path = root.join("test.txt").unwrap();
+
+    let path2 = root.join("hahahahah").unwrap();
+
+
+    path2.create_dir()
+        .unwrap();
+
+    path2
+        .join("a.txt")
+        .unwrap()
+        .create_file()
+        .unwrap()
+        .write_all(b"hahahahdsuahdsau")
+        .unwrap();
+
+    path2
+        .join("b.txt")
+        .unwrap()
+        .create_file()
+        .unwrap()
+        .write_all(b"hahahahdasuhdsaudhsa")
+        .unwrap();
+
+    path.create_file()
+        .unwrap()
+        .write_all(b"Hello World")
+        .unwrap();
+
+    let mut content = String::new();
+
+    path.open_file()
+        .unwrap()
+        .read_to_string(&mut content)
+        .unwrap();
+    
+    path2
+        .read_dir()
+        .unwrap()
+        .map(|v| v.as_str().to_string())
+        .collect::<Vec<String>>() 
 }
 
 #[query(name = "getSelf")]

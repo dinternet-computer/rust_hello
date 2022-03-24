@@ -12,6 +12,7 @@ export interface _SERVICE {
   'all_address' : () => Promise<Array<Address>>,
   'balance' : () => Promise<bigint>,
   'balance128' : () => Promise<bigint>,
+  'dd_test' : () => Promise<Array<string>>,
   'get' : (arg_0: string) => Promise<Profile_2>,
   'getSelf' : () => Promise<Profile_2>,
   'get_address' : (arg_0: number) => Promise<Address>,

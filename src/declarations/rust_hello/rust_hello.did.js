@@ -11,6 +11,7 @@ export const idlFactory = ({ IDL }) => {
     'all_address' : IDL.Func([], [IDL.Vec(Address)], []),
     'balance' : IDL.Func([], [IDL.Nat], ['query']),
     'balance128' : IDL.Func([], [IDL.Nat], ['query']),
+    'dd_test' : IDL.Func([], [IDL.Vec(IDL.Text)], []),
     'get' : IDL.Func([IDL.Text], [Profile_2], ['query']),
     'getSelf' : IDL.Func([], [Profile_2], ['query']),
     'get_address' : IDL.Func([IDL.Nat32], [Address], []),
