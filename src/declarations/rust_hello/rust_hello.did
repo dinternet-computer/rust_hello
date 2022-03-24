@@ -8,7 +8,12 @@ type Profile = Profile_2;
 
 type RawRand = record {
     vec nat8
-}
+};
+
+type Address = record {
+    "id": nat;
+    "name": opt text;
+};
 
 service : () -> {
     "getSelf": () -> (Profile_2) query;
@@ -28,5 +33,8 @@ service : () -> {
     "m_stable64_grow": () -> () query;
     "raw_rand": () -> (RawRand);
     "path_test": () -> (text);
+    "add_address": (Address) -> ();
+    "get_address": (nat) -> (Address);
+    "all_address": () -> (vec Address)
 }
 

@@ -10,9 +10,14 @@ use ic_cdk::{
 };
 
 use ic_cdk_macros::*;
+use test_storage::Address;
 use std::{cell::RefCell, vec};
 use std::collections::BTreeMap;
 use std::path::Path;
+
+mod test_storage;
+
+use crate::test_storage::{AddressBook};
 
 type IdStore = BTreeMap<String, Principal>;
 type ProfileStore = BTreeMap<Principal, Profile>;
@@ -87,6 +92,24 @@ fn path_test() -> String {
             d.to_string()
         },
     }
+}
+
+#[update]
+fn add_address(address: Address) {
+    storage::get_mut::<AddressBook>().insert(address.clone());
+}
+
+#[query]
+fn get_address(id: u32) -> Option<Address> {
+    Some(storage::get::<AddressBook>().find(id)?.clone())
+}
+
+#[query]
+fn all_address() -> Vec<Address> {
+    storage::get::<AddressBook>()
+        .iter()
+        .map(|e| e.to_owned())
+        .collect()
 }
 
 #[derive(CandidType, Deserialize)]

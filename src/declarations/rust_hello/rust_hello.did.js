@@ -1,4 +1,5 @@
 export const idlFactory = ({ IDL }) => {
+  const Address = IDL.Record({ 'id' : IDL.Nat, 'name' : IDL.Opt(IDL.Text) });
   const Profile_2 = IDL.Record({
     'name' : IDL.Text,
     'description' : IDL.Text,
@@ -6,10 +7,13 @@ export const idlFactory = ({ IDL }) => {
   });
   const RawRand = IDL.Tuple(IDL.Vec(IDL.Nat8));
   return IDL.Service({
+    'add_address' : IDL.Func([Address], [], []),
+    'all_address' : IDL.Func([], [IDL.Vec(Address)], []),
     'balance' : IDL.Func([], [IDL.Nat], ['query']),
     'balance128' : IDL.Func([], [IDL.Nat], ['query']),
     'get' : IDL.Func([IDL.Text], [Profile_2], ['query']),
     'getSelf' : IDL.Func([], [Profile_2], ['query']),
+    'get_address' : IDL.Func([IDL.Nat], [Address], []),
     'greet' : IDL.Func([IDL.Text], [IDL.Text], ['query']),
     'increment' : IDL.Func([], [], []),
     'm_caller' : IDL.Func([], [IDL.Text], ['query']),

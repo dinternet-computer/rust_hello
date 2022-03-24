@@ -1,4 +1,5 @@
 import type { Principal } from '@dfinity/principal';
+export interface Address { 'id' : bigint, 'name' : [] | [string] }
 export type Profile = Profile_2;
 export interface Profile_2 {
   'name' : string,
@@ -7,10 +8,13 @@ export interface Profile_2 {
 }
 export type RawRand = [Array<number>];
 export interface _SERVICE {
+  'add_address' : (arg_0: Address) => Promise<undefined>,
+  'all_address' : () => Promise<Array<Address>>,
   'balance' : () => Promise<bigint>,
   'balance128' : () => Promise<bigint>,
   'get' : (arg_0: string) => Promise<Profile_2>,
   'getSelf' : () => Promise<Profile_2>,
+  'get_address' : (arg_0: bigint) => Promise<Address>,
   'greet' : (arg_0: string) => Promise<string>,
   'increment' : () => Promise<undefined>,
   'm_caller' : () => Promise<string>,
