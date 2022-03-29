@@ -31,7 +31,7 @@ service : () -> {
     "m_id": () -> (text) query;
     "m_stable_size": () -> (nat);
     "m_stable64_grow": () -> () query;
-    "raw_rand": () -> (RawRand);
+    "raw_rand": () -> (vec nat8);
     "path_test": () -> (text);
     "add_address": (Address) -> ();
     "get_address": (nat32) -> (Address);

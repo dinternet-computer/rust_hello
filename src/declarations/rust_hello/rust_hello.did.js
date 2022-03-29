@@ -5,7 +5,6 @@ export const idlFactory = ({ IDL }) => {
     'description' : IDL.Text,
     'keywords' : IDL.Vec(IDL.Text),
   });
-  const RawRand = IDL.Tuple(IDL.Vec(IDL.Nat8));
   return IDL.Service({
     'add_address' : IDL.Func([Address], [], []),
     'all_address' : IDL.Func([], [IDL.Vec(Address)], []),
@@ -26,7 +25,7 @@ export const idlFactory = ({ IDL }) => {
     'm_stable_size' : IDL.Func([], [IDL.Nat], []),
     'm_time' : IDL.Func([], [IDL.Nat], ['query']),
     'path_test' : IDL.Func([], [IDL.Text], []),
-    'raw_rand' : IDL.Func([], [RawRand], []),
+    'raw_rand' : IDL.Func([], [IDL.Vec(IDL.Nat8)], []),
     'search' : IDL.Func([IDL.Text], [IDL.Opt(Profile_2)], ['query']),
     'set' : IDL.Func([IDL.Nat], [], []),
     'update' : IDL.Func([Profile_2], [], []),

@@ -15,6 +15,23 @@ type Address = record {
     "name": opt text;
 };
 
+type HeaderField = record { text; text; };
+type HttpQueryHeaderField = record { vec nat8; vec nat8 };
+
+type HttpRequest = record {
+    method: text;
+    url: text;
+    headers: vec HeaderField;
+    body: blob;
+};
+
+type HttpQuery = record {
+    method: text;
+    headers: vec HttpQueryHeaderField;
+    uri: text;
+    body: blob;
+};
+
 service : () -> {
     "getSelf": () -> (Profile_2) query;
     "get": (text) -> (Profile_2) query;
@@ -31,7 +48,7 @@ service : () -> {
     "m_id": () -> (text) query;
     "m_stable_size": () -> (nat);
     "m_stable64_grow": () -> () query;
-    "raw_rand": () -> (RawRand);
+    "raw_rand": () -> (vec nat8);
     "path_test": () -> (text);
     "add_address": (Address) -> ();
     "get_address": (nat32) -> (Address);
@@ -39,5 +56,7 @@ service : () -> {
     "m_stable_read": () -> (vec nat8);
     "get_all_file": () -> (vec text);
     "create_file": (text, text) -> (vec text); 
+    "get_http_request_history": () -> (vec HttpQuery);
+    "clear_get_http_request_history": () -> ();
 }
 
