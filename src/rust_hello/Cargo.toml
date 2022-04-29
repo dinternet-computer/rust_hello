@@ -11,8 +11,13 @@ crate-type = ["cdylib"]
 
 [dependencies]
 candid = "0.7.4"
-ic-cdk = "0.4"
-ic-cdk-macros = "0.4"
+ic-cdk = "0.5.0"
+ic-cdk-macros = "0.5.0"
 serde = "1.0"
 serde_bytes = "0.11"
-vfs = "0.6.2"
+git-hash = "0.9.2"
+git-packetline = { version = "0.12.3", features = ["blocking-io"]}
+fscommon = "0.1"
+fatfs = { git = "https://github.com/rafalh/rust-fatfs", rev = "87fc1ed5074a32b4e0344fcdde77359ef9e75432" }
+icfs = { git = "https://github.com/paulyoung/icfs.git" }
+icfs_fatfs = { path = "../icfs_fatfs" }

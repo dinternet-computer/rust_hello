@@ -15,6 +15,24 @@ type Address = record {
     "name": opt text;
 };
 
+type HeaderField = record { text; text; };
+type HttpQueryHeaderField = record { vec nat8; vec nat8 };
+
+type HttpRequest = record {
+    method: text;
+    url: text;
+    headers: vec HeaderField;
+    body: blob;
+    upgrade: opt bool;
+};
+
+type HttpQuery = record {
+    method: text;
+    headers: vec HttpQueryHeaderField;
+    uri: text;
+    body: blob;
+};
+
 service : () -> {
     "getSelf": () -> (Profile_2) query;
     "get": (text) -> (Profile_2) query;
@@ -34,10 +52,21 @@ service : () -> {
     "raw_rand": () -> (vec nat8);
     "path_test": () -> (text);
     "add_address": (Address) -> ();
-    "get_address": (nat32) -> (Address);
+    "get_address": (nat32) -> (opt Address);
     "all_address": () -> (vec Address);
     "m_stable_read": () -> (vec nat8);
     "get_all_file": () -> (vec text);
     "create_file": (text, text) -> (vec text); 
+    "get_http_request_history": () -> (vec HttpQuery);
+    "clear_get_http_request_history": () -> ();
+    "get_http_update_request_history": () -> (vec HttpRequest);
+    "get_current_time_list": () -> (vec nat64);
+    "test": () -> ();
+    "get_test": () -> (vec nat8);
+    "cat": (text) -> (text);
+    "ls": (text) -> (vec text);
+    "mkdir": (text) -> ();
+    "rm": (text) -> ();
+    "write_file": (text, text) -> ();
 }
 
